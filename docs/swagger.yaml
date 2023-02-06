@@ -1,0 +1,118 @@
+definitions:
+  domain.PointLog:
+    properties:
+      before:
+        type: number
+      createdAt:
+        type: string
+      difference:
+        type: number
+      opCode:
+        type: string
+      type:
+        type: string
+      userID:
+        type: string
+    type: object
+  domain.UpdatePointRes:
+    properties:
+      balance:
+        type: number
+    type: object
+info:
+  contact: {}
+  description: 積分錢包
+  title: point 模組
+paths:
+  /point/logs/{userID}:
+    get:
+      description: '使用模組: user-profile'
+      parameters:
+      - description: ' '
+        in: path
+        name: UserID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 用戶積分異動紀錄
+          schema:
+            items:
+              $ref: '#/definitions/domain.PointLog'
+            type: array
+      security:
+      - Systoken: []
+      summary: 取得用戶積分異動紀錄
+  /point/wallet:
+    post:
+      description: '使用模組: user </br> 新會員加入會員系統時使用'
+      parameters:
+      - in: formData
+        items:
+          type: string
+        name: userID
+        required: true
+        type: array
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - Systoken: []
+      summary: 新增積分錢包
+  /point/wallet/{userID}:
+    get:
+      description: '使用模組: user-profile'
+      parameters:
+      - description: ' '
+        in: path
+        name: UserID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: 用戶積分錢包餘額
+          schema:
+            type: integer
+      security:
+      - Systoken: []
+      summary: 取得積分錢包餘額
+    patch:
+      description: '使用模組: fortune-recommend, mission, user, reward'
+      parameters:
+      - in: formData
+        name: changeType
+        required: true
+        type: string
+      - in: formData
+        name: opCode
+        required: true
+        type: string
+      - in: formData
+        name: point
+        required: true
+        type: number
+      - in: formData
+        name: type
+        required: true
+        type: string
+      - description: ' '
+        in: path
+        name: UserID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UpdatePointRes'
+      security:
+      - Systoken: []
+      summary: 變更積分
+securityDefinitions:
+  Systoken:
+    in: header
+    name: Systoken
+    type: apiKey
+swagger: "2.0"
